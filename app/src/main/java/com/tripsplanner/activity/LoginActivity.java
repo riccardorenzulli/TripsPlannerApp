@@ -1,12 +1,14 @@
-package com.tripsplanner.activities;
+package com.tripsplanner.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -17,7 +19,21 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.google.gson.Gson;
 import com.tripsplanner.R;
+import com.tripsplanner.entity.User;
+
+/**
+ * Authors: Giovanni Bonetta, Riccardo Renzulli, Gabriele Sartor<br>
+ * Università degli Studi di Torino<br>
+ * Department of Computer Science<br>
+ * Sviluppo Software per Componenti e Servizi Web<br>
+ * Date: May 2018<br><br>
+ * <p/>
+ * giovanni.bonetta@edu.unito.it<br>
+ * riccardo.renzulli@edu.unito.it<br>
+ * gabriele.sartor@edu.unito.it<br><br>
+ */
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -96,6 +112,27 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void updateUI(GoogleSignInAccount account) {
         if (account != null) {
+            String personName = account.getDisplayName();
+            String personGivenName = account.getGivenName();
+            String personFamilyName = account.getFamilyName();
+            String personEmail = account.getEmail();
+            String personId = account.getId();
+            Uri personPhoto = account.getPhotoUrl();
+            System.out.println(personName);
+            System.out.println(personGivenName);
+            System.out.println(personFamilyName);
+            System.out.println(personEmail);
+            System.out.println(personId);
+            System.out.println(personPhoto);
+
+            User user = new User(personEmail, personId, personPhoto.toString());
+            Gson gsonObject = new Gson();
+            String userGson = gsonObject.toJson(user);
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString("user", userGson);
+            editor.apply();
+
             startMainActivity();
             finish();
         }
