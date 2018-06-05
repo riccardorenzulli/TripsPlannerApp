@@ -6,17 +6,6 @@
 package com.tripsplanner.entity;
 
 import java.io.Serializable;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 
 /**
  * Authors: Giovanni Bonetta, Riccardo Renzulli, Gabriele Sartor<br>
@@ -30,20 +19,14 @@ import javax.persistence.OneToOne;
  * gabriele.sartor@edu.unito.it<br><br>
  */
 
-@Entity
 public class Route implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
-    @ManyToOne
     private DayItinerary dayItinerary;
 
-    @ManyToOne
     private Place departurePlace;
     
-    @ManyToOne
     private Place arrivalPlace;
     
     private String distanceText;

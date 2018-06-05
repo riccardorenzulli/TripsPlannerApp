@@ -162,9 +162,8 @@ public class MyTripsFragment extends Fragment implements DialogInterface.OnClick
         }
 
         private String getMyTripsQuery() {
-            String url = "https://maps.googleapis.com/maps/api/directions/json?";
-            String parameters = "origin=";
-            String query = new StringBuilder(url).append(parameters).toString();
+            String url = "http://ec2-35-178-99-206.eu-west-2.compute.amazonaws.com:8080/TripsPlanner-war/webresources/mytrips";
+            String query = new StringBuilder(url).toString();
 
             return query;
         }
@@ -190,7 +189,7 @@ public class MyTripsFragment extends Fragment implements DialogInterface.OnClick
             String jsonResult = sb.toString();
             Gson gson = new Gson();
 
-
+            myTrips = gson.fromJson(jsonResult, List.class);
 
             return;
         }
