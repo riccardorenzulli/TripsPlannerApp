@@ -82,10 +82,10 @@ public class MyTripsFragment extends Fragment implements DialogInterface.OnClick
         mLayoutManager = new StaggeredGridLayoutManager(this.getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ? 3 : 2,1);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        /*mAdapter = new HomeTripAdapter(this.getContext(), myTrips);
-        mRecyclerView.setAdapter(mAdapter);*/
-        myTripsTask = new MyTripsTask(this.getContext());
-        myTripsTask.execute();
+        mAdapter = new HomeTripAdapter(this.getContext(), myTrips);
+        mRecyclerView.setAdapter(mAdapter);
+/*        myTripsTask = new MyTripsTask(this.getContext());
+        myTripsTask.execute();*/
 
 
     }
@@ -189,7 +189,7 @@ public class MyTripsFragment extends Fragment implements DialogInterface.OnClick
             StringBuilder sb = new StringBuilder();
 
             while(line!=null) {
-                //System.out.println(line);
+                System.out.println(line);
                 sb.append(line);
                 line = read.readLine();
             }
