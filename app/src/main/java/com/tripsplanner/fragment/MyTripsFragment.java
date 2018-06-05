@@ -104,10 +104,6 @@ public class MyTripsFragment extends Fragment implements DialogInterface.OnClick
 
     @Override
     public void onClick(DialogInterface dialog, int which) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getContext());
-        String userGson = prefs.getString("user","");
-        Gson gson = new Gson();
-        String userID = gson.fromJson(userGson, User.class).getGoogleID();
         switch (which) {
             case DialogInterface.BUTTON_POSITIVE:
                 myTripsTask = new MyTripsTask(this.getContext());
@@ -170,13 +166,20 @@ public class MyTripsFragment extends Fragment implements DialogInterface.OnClick
         }
 
         private String getMyTripsQuery() {
-            String url = "http://ec2-18-130-53-112.eu-west-2.compute.amazonaws.com:8080/TripsPlanner-war/webresources/mytrips";
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+            String userGson = prefs.getString("user","");
+            Gson gson = new Gson();
+            long userID = gson.fromJson(userGson, User.class).getId();
+            System.out.println("UserID:"+userID);
+
+            String url = "http://ec2-18-130-53-112.eu-west-2.compute.amazonaws.com:8080/TripsPlanner-war/webresources/mytrips?id="+userID;
             String query = new StringBuilder(url).toString();
 
             return query;
         }
 
         private void getMyTrips(String query) throws MalformedURLException, IOException {
+            System.out.println("Query:"+query);
             URL obj = new URL(query);
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 
@@ -198,8 +201,6 @@ public class MyTripsFragment extends Fragment implements DialogInterface.OnClick
             Gson gson = new Gson();
 
             myTrips = gson.fromJson(jsonResult, List.class);
-
-            return;
         }
     }
 

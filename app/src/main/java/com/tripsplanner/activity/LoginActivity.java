@@ -133,12 +133,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             System.out.println(personPhoto);
 
             User user = new User(personEmail, personId, personPhoto.toString());
-            Gson gsonObject = new Gson();
-            String userGson = gsonObject.toJson(user);
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putString("user", userGson);
-            editor.apply();
 
             new AsyncTask<User, Object, Void>() {
 
@@ -182,15 +176,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         StringBuilder sb = new StringBuilder();
 
         while(line!=null) {
-            //System.out.println(line);
+            System.out.println(line);
             sb.append(line);
             line = read.readLine();
         }
 
         String jsonResult = sb.toString();
-        Gson gson = new Gson();
 
-        return;
+        Gson gsonObject = new Gson();
+        String userGson = gsonObject.toJson(jsonResult);
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("user", userGson);
+        editor.apply();
+
     }
 
     private void startMainActivity() {
