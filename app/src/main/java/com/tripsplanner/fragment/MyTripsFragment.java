@@ -24,7 +24,18 @@ import android.view.ViewGroup;
 
 import com.google.gson.Gson;
 import com.tripsplanner.R;
+import com.tripsplanner.adapter.HomeTripAdapter;
+import com.tripsplanner.entity.Trip;
 import com.tripsplanner.entity.User;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import static android.support.v4.widget.SwipeRefreshLayout.*;
 
@@ -40,16 +51,12 @@ import static android.support.v4.widget.SwipeRefreshLayout.*;
 
 public class MyTripsFragment extends Fragment implements DialogInterface.OnClickListener, OnRefreshListener {
 
-    private RetainedFragment dataFragment;
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private StaggeredGridLayoutManager mLayoutManager;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private RecentsTask recentsTask;
-    private static final int REQUEST_PERMISSION_WRITE_EXTERNAL_STORAGE = 1;
-    protected static boolean permissions = false;
-    private static boolean saveOffline;
-    private int [] positions;
+    private MyTripsTask myTripsTask;
+    private List<Trip> myTrips = new ArrayList<Trip>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,9 +68,9 @@ public class MyTripsFragment extends Fragment implements DialogInterface.OnClick
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_mytrips, container, false);
-        if (savedInstanceState != null) positions = savedInstanceState.getIntArray("lastVisiblePosition");
+        //if (savedInstanceState != null) positions = savedInstanceState.getIntArray("lastVisiblePosition");
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.post_content);
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.trips_content);
         swipeRefreshLayout.setOnRefreshListener(this);
         return view;
     }
@@ -72,85 +79,14 @@ public class MyTripsFragment extends Fragment implements DialogInterface.OnClick
     public void onStart() {
         super.onStart();
         System.out.println("start");
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getContext());
-        saveOffline = prefs.getBoolean("saveOffline",true);
 
         mLayoutManager = new StaggeredGridLayoutManager(this.getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ? 3 : 2,1);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-
-        if(positions != null) {
-            mLayoutManager.scrollToPosition(positions[0]);
-        }
-
-
-        FragmentManager fm = ((Activity)this.getContext()).getFragmentManager();
-        dataFragment = (RetainedFragment) fm.findFragmentByTag("RetainedFragment");
-
-        if (dataFragment == null) {
-            dataFragment = new RetainedFragment();
-            fm.beginTransaction().add(dataFragment,"RetainedFragment").commit();
-            fm.executePendingTransactions();
-            checkStoragePermission();
-            if(saveOffline && permissions) {
-                //System.out.println("carico files locali");
-                //Model.loadPosts();
-            }
-
-            else if (!saveOffline) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
-                builder.setMessage("Do you want to download your posts?");
-                builder.setPositiveButton("Yes",this);
-                builder.setNegativeButton("No",this);
-                builder.show();
-            }
-        }
-
-        //mAdapter = new RecentsAdapter(Model.getMyPosts(), this.getContext(), this.permissions, saveOffline);
+        mAdapter = new HomeTripAdapter(this.getContext(), myTrips);
         mRecyclerView.setAdapter(mAdapter);
-        //Model.resetNewPost();
     }
 
-    private void checkStoragePermission() {
-        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-
-            requestPermissions(new  String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},REQUEST_PERMISSION_WRITE_EXTERNAL_STORAGE);
-                //ActivityCompat.requestPermissions(getActivity(),new  String[]{Manifest.permission.READ_EXTERNAL_STORAGE},REQUEST_PERMISSION_READ_EXTERNAL_STORAGE);
-
-        }
-        else permissions = true;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,  String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case REQUEST_PERMISSION_WRITE_EXTERNAL_STORAGE: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-                    this.permissions = true;
-                    //Model.loadPosts();
-                    //mAdapter = new RecentsAdapter(Model.getMyPosts(), this.getContext(), this.permissions, saveOffline);
-                    mRecyclerView.setAdapter(mAdapter);
-                    //Model.resetNewPost();
-
-                } else {
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                    this.permissions = false;
-
-                }
-                break;
-
-            }
-
-        }
-
-    }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -171,8 +107,8 @@ public class MyTripsFragment extends Fragment implements DialogInterface.OnClick
         String userID = gson.fromJson(userGson, User.class).getGoogleID();
         switch (which) {
             case DialogInterface.BUTTON_POSITIVE:
-                recentsTask = new RecentsTask(this.getContext(), permissions);
-                recentsTask.execute(userID);
+                myTripsTask = new MyTripsTask(this.getContext());
+                myTripsTask.execute(userID);
                 break;
             case DialogInterface.BUTTON_NEGATIVE:
                 break;
@@ -197,13 +133,11 @@ public class MyTripsFragment extends Fragment implements DialogInterface.OnClick
 
     }
 
-    protected class RecentsTask extends AsyncTask<String, Void, String> {
+    protected class MyTripsTask extends AsyncTask<String, Void, String> {
         private Context context;
-        private boolean permissions;
 
-        public RecentsTask(Context context, boolean permissions) {
+        public MyTripsTask(Context context) {
             this.context = context;
-            this.permissions = permissions;
         }
 
         @Override
@@ -222,16 +156,43 @@ public class MyTripsFragment extends Fragment implements DialogInterface.OnClick
 
         @Override
         protected void onPostExecute(String result) {
-/*            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(Model.getContext());
-            saveOffline = prefs.getBoolean("saveOffline",true);
-            if (saveOffline) {
-                ArrayList<Post> myPosts = Model.getMyPosts();
-                for(int i = 0; i<myPosts.size(); i++)
-                    Model.insertPostOffline(myPosts.get(i));
-            }
-            mAdapter = new RecentsAdapter(Model.getMyPosts(), this.context, this.permissions,saveOffline);
+            mAdapter = new HomeTripAdapter(this.context, myTrips);
             mRecyclerView.setAdapter(mAdapter);
-            swipeRefreshLayout.setRefreshing(false);*/
+            swipeRefreshLayout.setRefreshing(false);
+        }
+
+        private String getMyTripsQuery() {
+            String url = "https://maps.googleapis.com/maps/api/directions/json?";
+            String parameters = "origin=";
+            String query = new StringBuilder(url).append(parameters).toString();
+
+            return query;
+        }
+
+        private void getMyTrips(String query) throws MalformedURLException, IOException {
+            URL obj = new URL(query);
+            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+
+            con.setRequestMethod("GET");
+            con.setRequestProperty("Content-Type", "application/json");
+
+            BufferedReader read = new BufferedReader(new InputStreamReader(con.getInputStream()));
+
+            String line = read.readLine();
+            StringBuilder sb = new StringBuilder();
+
+            while(line!=null) {
+                //System.out.println(line);
+                sb.append(line);
+                line = read.readLine();
+            }
+
+            String jsonResult = sb.toString();
+            Gson gson = new Gson();
+
+
+
+            return;
         }
     }
 
