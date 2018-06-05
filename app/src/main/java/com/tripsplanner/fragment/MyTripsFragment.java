@@ -79,12 +79,11 @@ public class MyTripsFragment extends Fragment implements DialogInterface.OnClick
     public void onStart() {
         super.onStart();
         System.out.println("start");
-
         mLayoutManager = new StaggeredGridLayoutManager(this.getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ? 3 : 2,1);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mAdapter = new HomeTripAdapter(this.getContext(), myTrips);
-        mRecyclerView.setAdapter(mAdapter);
+        /*mAdapter = new HomeTripAdapter(this.getContext(), myTrips);
+        mRecyclerView.setAdapter(mAdapter);*/
         myTripsTask = new MyTripsTask(this.getContext());
         myTripsTask.execute();
 
@@ -108,7 +107,7 @@ public class MyTripsFragment extends Fragment implements DialogInterface.OnClick
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getContext());
         String userGson = prefs.getString("user","");
         Gson gson = new Gson();
-        //String userID = gson.fromJson(userGson, User.class).getGoogleID();
+        String userID = gson.fromJson(userGson, User.class).getGoogleID();
         switch (which) {
             case DialogInterface.BUTTON_POSITIVE:
                 myTripsTask = new MyTripsTask(this.getContext());
@@ -121,7 +120,7 @@ public class MyTripsFragment extends Fragment implements DialogInterface.OnClick
 
     @Override
     public void onRefresh() {
-/*        if(Model.getMyPosts().size()==0)
+        if(this.myTrips.size()==0)
             onClick(new DialogInterface() {
                 @Override
                 public void cancel() {
@@ -133,7 +132,7 @@ public class MyTripsFragment extends Fragment implements DialogInterface.OnClick
 
                 }
             }, DialogInterface.BUTTON_POSITIVE);
-        else swipeRefreshLayout.setRefreshing(false);*/
+        else swipeRefreshLayout.setRefreshing(false);
 
     }
 
@@ -147,29 +146,30 @@ public class MyTripsFragment extends Fragment implements DialogInterface.OnClick
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            System.out.print("AsynkTask onPreExecute!");
             swipeRefreshLayout.setRefreshing(true);
         }
 
         @Override
         protected String doInBackground(String... urls) {
+            System.out.print("AsynkTask Started!");
             try {
                 getMyTrips(getMyTripsQuery());
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            System.out.print("AsynkTask Started!");
             return "My post founded!";
         }
 
         @Override
         protected void onPostExecute(String result) {
+            System.out.print("AsynkTask onPostExecute!");
             mAdapter = new HomeTripAdapter(this.context, myTrips);
             mRecyclerView.setAdapter(mAdapter);
             swipeRefreshLayout.setRefreshing(false);
         }
 
         private String getMyTripsQuery() {
-            //String url = "http://ec2-35-178-99-206.eu-west-2.compute.amazonaws.com:8080/TripsPlanner-war/webresources/mytrips";
             String url = "http://ec2-18-130-53-112.eu-west-2.compute.amazonaws.com:8080/TripsPlanner-war/webresources/mytrips";
             String query = new StringBuilder(url).toString();
 
