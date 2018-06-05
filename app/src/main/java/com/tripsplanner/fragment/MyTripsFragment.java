@@ -85,6 +85,10 @@ public class MyTripsFragment extends Fragment implements DialogInterface.OnClick
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mAdapter = new HomeTripAdapter(this.getContext(), myTrips);
         mRecyclerView.setAdapter(mAdapter);
+        myTripsTask = new MyTripsTask(this.getContext());
+        myTripsTask.execute();
+
+
     }
 
 
@@ -104,11 +108,11 @@ public class MyTripsFragment extends Fragment implements DialogInterface.OnClick
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getContext());
         String userGson = prefs.getString("user","");
         Gson gson = new Gson();
-        String userID = gson.fromJson(userGson, User.class).getGoogleID();
+        //String userID = gson.fromJson(userGson, User.class).getGoogleID();
         switch (which) {
             case DialogInterface.BUTTON_POSITIVE:
                 myTripsTask = new MyTripsTask(this.getContext());
-                myTripsTask.execute(userID);
+                myTripsTask.execute();
                 break;
             case DialogInterface.BUTTON_NEGATIVE:
                 break;
@@ -148,8 +152,11 @@ public class MyTripsFragment extends Fragment implements DialogInterface.OnClick
 
         @Override
         protected String doInBackground(String... urls) {
-            String user = urls[0];
-            //DBHelperOnline.downloadPost(0,null,true,user);
+            try {
+                getMyTrips(getMyTripsQuery());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             System.out.print("AsynkTask Started!");
             return "My post founded!";
         }
@@ -162,7 +169,8 @@ public class MyTripsFragment extends Fragment implements DialogInterface.OnClick
         }
 
         private String getMyTripsQuery() {
-            String url = "http://ec2-35-178-99-206.eu-west-2.compute.amazonaws.com:8080/TripsPlanner-war/webresources/mytrips";
+            //String url = "http://ec2-35-178-99-206.eu-west-2.compute.amazonaws.com:8080/TripsPlanner-war/webresources/mytrips";
+            String url = "http://ec2-18-130-53-112.eu-west-2.compute.amazonaws.com:8080/TripsPlanner-war/webresources/mytrips";
             String query = new StringBuilder(url).toString();
 
             return query;

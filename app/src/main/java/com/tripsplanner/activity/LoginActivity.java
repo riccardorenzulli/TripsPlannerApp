@@ -3,6 +3,7 @@ package com.tripsplanner.activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,6 +23,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.gson.Gson;
 import com.tripsplanner.R;
 import com.tripsplanner.entity.User;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 /**
  * Authors: Giovanni Bonetta, Riccardo Renzulli, Gabriele Sartor<br>
@@ -133,13 +140,57 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             editor.putString("user", userGson);
             editor.apply();
 
-            startMainActivity();
-            finish();
+            new AsyncTask<User, Object, Void>() {
+
+                @Override
+                protected Void doInBackground(User... users) {
+                    try {
+                        loginServer(users[0].getEmail());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }
+
+                @Override
+                protected void onPostExecute(Void aVoid) {
+                    System.out.print("onPostExecute");
+                    startMainActivity();
+                    finish();
+                }
+            }.execute(user);
+            ;
+
         }
 
         else {
             System.out.println("Error login");
         }
+    }
+
+    private void loginServer(String email) throws IOException {
+        String url = "http://ec2-18-130-53-112.eu-west-2.compute.amazonaws.com:8080/TripsPlanner-war/webresources/login?type=google&email="+email;
+        URL obj = new URL(url);
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+
+        con.setRequestMethod("GET");
+        con.setRequestProperty("Content-Type", "application/json");
+
+        BufferedReader read = new BufferedReader(new InputStreamReader(con.getInputStream()));
+
+        String line = read.readLine();
+        StringBuilder sb = new StringBuilder();
+
+        while(line!=null) {
+            //System.out.println(line);
+            sb.append(line);
+            line = read.readLine();
+        }
+
+        String jsonResult = sb.toString();
+        Gson gson = new Gson();
+
+        return;
     }
 
     private void startMainActivity() {
