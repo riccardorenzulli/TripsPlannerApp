@@ -3,17 +3,24 @@ package com.tripsplanner.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.widget.LinearLayout;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.tripsplanner.R;
+import com.tripsplanner.adapter.DaysAdapter;
 import com.tripsplanner.adapter.HomeTripAdapter;
 import com.tripsplanner.entity.BasicTrip;
+import com.tripsplanner.entity.DayItinerary;
 import com.tripsplanner.entity.Trip;
 import com.tripsplanner.entity.User;
 
@@ -26,7 +33,10 @@ import java.net.URL;
 import java.util.List;
 
 public class TripDaysActivity extends AppCompatActivity {
-
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private StaggeredGridLayoutManager mLayoutManager;
+    private LinearLayout linearLayout;
     private long idUser;
     private long idTrip;
     private Trip myTrip;
@@ -36,11 +46,26 @@ public class TripDaysActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_days);
 
+        linearLayout = (LinearLayout) findViewById(R.id.days_content);
+        mRecyclerView = (RecyclerView) linearLayout.findViewById(R.id.recycler_view);
+
         Intent intent = getIntent();
         idUser = intent.getLongExtra("id_user", 0);
         idTrip = intent.getLongExtra("id_trip", 0);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        System.out.println("start");
+        mLayoutManager = new StaggeredGridLayoutManager(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ? 3 : 2,1);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mAdapter = new DaysAdapter(this, myTrip.getItineraries());
+        mRecyclerView.setAdapter(mAdapter);
+
+
+    }
     protected class MyTripTask extends AsyncTask<String, Void, String> {
         private Context context;
 
@@ -68,7 +93,7 @@ public class TripDaysActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             System.out.print("AsynkTask onPostExecute!");
-            mAdapter = new HomeTripAdapter(this.context, myTrips);
+            mAdapter = new DaysAdapter(this.context, myTrip.getItineraries());
             mRecyclerView.setAdapter(mAdapter);
         }
 
