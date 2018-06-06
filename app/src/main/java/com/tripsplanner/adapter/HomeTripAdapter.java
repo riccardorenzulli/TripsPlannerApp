@@ -2,10 +2,12 @@ package com.tripsplanner.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,9 +16,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.tripsplanner.R;
 import com.tripsplanner.activity.MainActivity;
 import com.tripsplanner.entity.BasicTrip;
+import com.tripsplanner.entity.User;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -105,9 +109,14 @@ public class HomeTripAdapter extends RecyclerView.Adapter<HomeTripAdapter.TripVi
 
         @Override
         public void onClick(View v) {
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+            String userGson = preferences.getString("user","");
+            Gson gson = new Gson();
+
             Intent intent = new Intent(v.getContext(), MainActivity.class);
             long id = myTrips.get(getPosition()).getIdTrip();
-            intent.putExtra("ID",id);
+            intent.putExtra("id_trip",id);
+            intent.putExtra("id_user", gson.fromJson(userGson,User.class).getId());
             v.getContext().startActivity(intent);
         }
 
