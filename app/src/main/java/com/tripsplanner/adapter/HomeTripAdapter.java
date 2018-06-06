@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.tripsplanner.R;
 import com.tripsplanner.activity.MainActivity;
+import com.tripsplanner.activity.TripDaysActivity;
 import com.tripsplanner.entity.BasicTrip;
 import com.tripsplanner.entity.User;
 
@@ -83,29 +84,6 @@ public class HomeTripAdapter extends RecyclerView.Adapter<HomeTripAdapter.TripVi
             tripDateTextView = (TextView) itemView.findViewById(R.id.date_trip);
         }
 
-/*        @Override
-        public boolean onLongClick(View v) {
-            if(dialog==null) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setMessage("Vuoi eliminare il post?");
-                builder.setPositiveButton("Yes",new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Model.deletePostById(myPosts.get(getPosition()).getID());
-                        int position = getPosition();
-                        removeItem(position);
-                    }
-                });
-                builder.setNegativeButton("No",new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {}
-                });
-                dialog = builder.create();
-            }
-            dialog.show();
-            dialog = null;
-            return true;
-        }*/
 
         @Override
         public void onClick(View v) {
@@ -113,7 +91,7 @@ public class HomeTripAdapter extends RecyclerView.Adapter<HomeTripAdapter.TripVi
             String userGson = preferences.getString("user","");
             Gson gson = new Gson();
 
-            Intent intent = new Intent(v.getContext(), MainActivity.class);
+            Intent intent = new Intent(v.getContext(), TripDaysActivity.class);
             long id = myTrips.get(getPosition()).getIdTrip();
             intent.putExtra("id_trip",id);
             intent.putExtra("id_user", gson.fromJson(userGson,User.class).getId());

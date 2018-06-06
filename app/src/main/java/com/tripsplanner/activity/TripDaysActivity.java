@@ -33,6 +33,7 @@ import java.net.URL;
 import java.util.List;
 
 public class TripDaysActivity extends AppCompatActivity {
+    private MyTripTask myTripTask;
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private StaggeredGridLayoutManager mLayoutManager;
@@ -40,6 +41,7 @@ public class TripDaysActivity extends AppCompatActivity {
     private long idUser;
     private long idTrip;
     private Trip myTrip;
+    private List<DayItinerary> itineraries;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,8 +63,11 @@ public class TripDaysActivity extends AppCompatActivity {
         mLayoutManager = new StaggeredGridLayoutManager(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ? 3 : 2,1);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mAdapter = new DaysAdapter(this, myTrip.getItineraries());
-        mRecyclerView.setAdapter(mAdapter);
+/*        mAdapter = new DaysAdapter(this, itineraries);
+        mRecyclerView.setAdapter(mAdapter);*/
+        myTripTask = new MyTripTask(this);
+        myTripTask.execute();
+
 
 
     }
@@ -93,7 +98,7 @@ public class TripDaysActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             System.out.print("AsynkTask onPostExecute!");
-            mAdapter = new DaysAdapter(this.context, myTrip.getItineraries());
+            mAdapter = new DaysAdapter(this.context, itineraries);
             mRecyclerView.setAdapter(mAdapter);
         }
 
@@ -130,9 +135,10 @@ public class TripDaysActivity extends AppCompatActivity {
             }
 
             String jsonResult = sb.toString();
-            Gson gson = new Gson();
+            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 
             myTrip = gson.fromJson(jsonResult, Trip.class);
+            itineraries = myTrip.getItineraries();
         }
     }
 }
