@@ -49,11 +49,13 @@ public class HomeTripAdapter extends RecyclerView.Adapter<HomeTripAdapter.TripVi
     @Override
     public void onBindViewHolder(TripViewHolder holder, int position) {
         BasicTrip trip = this.myTrips.get(position);
-        String tripCityAndDate = trip.getDestination() + "\n" +
-                trip.getDepartureDate().toString();
+        String tripCity = trip.getDestination();
+
+        String tripDate = "from " + trip.getDepartureDate().toString() +
+                "\nto " + trip.getArrivalDate().toString();
         //holder.tripImageView.setImageURI(Uri.parse(trip.getDayPlaces(0).get(1).getPhotosUrl()));
-        holder.tripTextView.setText(tripCityAndDate);
-        //holder.tripDateTextView.setText(tripDate);
+        holder.tripTextView.setText(tripCity);
+        holder.tripDateTextView.setText(tripDate);
         new BitmapDownloaderTask(holder.tripImageView).execute(trip.getPlaceIMGUrl());
 
     }

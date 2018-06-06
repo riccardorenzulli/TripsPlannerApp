@@ -6,14 +6,16 @@ public class BasicTrip {
     private Long idTrip;
     private String destination;
     private Date departureDate;
+    private Date arrivalDate;
     private String placeIMGUrl;
 
     public BasicTrip() {}
 
-    public BasicTrip(Long idTrip, String destination, Date departureDate, String placeIMGUrl) {
+    public BasicTrip(Long idTrip, String destination, Date departureDate, Date arrivalDate, String placeIMGUrl) {
         this.idTrip = idTrip;
         this.destination = destination;
         this.departureDate = departureDate;
+        this.arrivalDate = arrivalDate;
         this.placeIMGUrl = placeIMGUrl;
     }
 
@@ -47,5 +49,13 @@ public class BasicTrip {
 
     public void setDepartureDate(Date departureDate) {
         this.departureDate = departureDate;
+    }
+
+    public Date getArrivalDate() {
+        return arrivalDate;
+    }
+
+    public void setArrivalDate(Date arrivalDate) {
+        this.arrivalDate = arrivalDate;
     }
 }
