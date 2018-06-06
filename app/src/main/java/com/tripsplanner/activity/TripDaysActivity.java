@@ -98,7 +98,7 @@ public class TripDaysActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             System.out.print("AsynkTask onPostExecute!");
-            mAdapter = new DaysAdapter(this.context, itineraries);
+            mAdapter = new DaysAdapter(this.context, itineraries, myTrip);
             mRecyclerView.setAdapter(mAdapter);
         }
 

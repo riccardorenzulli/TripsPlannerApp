@@ -23,6 +23,7 @@ import com.tripsplanner.activity.MainActivity;
 import com.tripsplanner.entity.BasicTrip;
 import com.tripsplanner.entity.DayItinerary;
 import com.tripsplanner.entity.Place;
+import com.tripsplanner.entity.Trip;
 import com.tripsplanner.entity.User;
 
 import java.io.BufferedInputStream;
@@ -39,10 +40,12 @@ public class DaysAdapter extends RecyclerView.Adapter<DaysAdapter.DayViewHolder>
 
     private Context context = null;
     private List<DayItinerary> dayItineraries = null;
+    private Trip myTrip = null;
 
-    public DaysAdapter(Context context, List<DayItinerary> dayItineraries) {
+    public DaysAdapter(Context context, List<DayItinerary> dayItineraries, Trip myTrip) {
         this.context = context;
         this.dayItineraries = dayItineraries;
+        this.myTrip = myTrip;
     }
 
     @NonNull
@@ -83,7 +86,7 @@ public class DaysAdapter extends RecyclerView.Adapter<DaysAdapter.DayViewHolder>
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(v.getContext(), DayItineraryActivity.class);
-            List<Place> places = dayItineraries.get(getPosition()).getTrip().getDayPlaces(getPosition());
+            List<Place> places = myTrip.getDayPlaces(getPosition());
             Gson gson = new Gson();
             String placesJson = gson.toJson(places);
             intent.putExtra("dayPlaces",placesJson);
