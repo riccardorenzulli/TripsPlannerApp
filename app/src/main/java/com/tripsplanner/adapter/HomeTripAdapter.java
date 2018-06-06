@@ -1,6 +1,7 @@
 package com.tripsplanner.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -14,7 +15,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tripsplanner.R;
-import com.tripsplanner.entity.Trip;
+import com.tripsplanner.activity.MainActivity;
+import com.tripsplanner.entity.BasicTrip;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -22,6 +24,7 @@ import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,9 +32,9 @@ import static android.content.ContentValues.TAG;
 
 public class HomeTripAdapter extends RecyclerView.Adapter<HomeTripAdapter.TripViewHolder> {
     private Context context = null;
-    private List<Trip> myTrips = null;
+    private List<BasicTrip> myTrips = null;
 
-    public HomeTripAdapter(Context context, List<Trip> trips) {
+    public HomeTripAdapter(Context context, List<BasicTrip> trips) {
         this.context = context;
         this.myTrips = trips;
     }
@@ -45,11 +48,13 @@ public class HomeTripAdapter extends RecyclerView.Adapter<HomeTripAdapter.TripVi
 
     @Override
     public void onBindViewHolder(TripViewHolder holder, int position) {
-        Trip trip = this.myTrips.get(position);
-        String imageURL = trip.getDayPlaces(0).get(1).getPhotosUrl();
+        BasicTrip trip = this.myTrips.get(position);
+        String tripCityAndDate = trip.getDestination() + "\n" +
+                trip.getDepartureDate().toString();
         //holder.tripImageView.setImageURI(Uri.parse(trip.getDayPlaces(0).get(1).getPhotosUrl()));
-        holder.tripTextView.setText(trip.getSearch().getDestinationCity());
-        new BitmapDownloaderTask(holder.tripImageView).execute(imageURL);
+        holder.tripTextView.setText(tripCityAndDate);
+        //holder.tripDateTextView.setText(tripDate);
+        new BitmapDownloaderTask(holder.tripImageView).execute(trip.getPlaceIMGUrl());
 
     }
 
@@ -61,6 +66,7 @@ public class HomeTripAdapter extends RecyclerView.Adapter<HomeTripAdapter.TripVi
     class TripViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView tripImageView;
         TextView tripTextView;
+        TextView tripDateTextView;
 
         public TripViewHolder(View itemView) {
             super(itemView);
@@ -68,6 +74,7 @@ public class HomeTripAdapter extends RecyclerView.Adapter<HomeTripAdapter.TripVi
             //tripImageView.setOnLongClickListener(this);
             tripImageView.setOnClickListener(this);
             tripTextView = (TextView) itemView.findViewById(R.id.tripTextView);
+            tripDateTextView = (TextView) itemView.findViewById(R.id.date_trip);
         }
 
 /*        @Override
@@ -96,10 +103,10 @@ public class HomeTripAdapter extends RecyclerView.Adapter<HomeTripAdapter.TripVi
 
         @Override
         public void onClick(View v) {
-            /*Intent intent = new Intent(v.getContext(), DisplayPostActivity.class);
-            String id = myPosts.get(getPosition()).getID();
+            Intent intent = new Intent(v.getContext(), MainActivity.class);
+            long id = myTrips.get(getPosition()).getIdTrip();
             intent.putExtra("ID",id);
-            v.getContext().startActivity(intent);*/
+            v.getContext().startActivity(intent);
         }
 
     }

@@ -27,6 +27,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.tripsplanner.R;
 import com.tripsplanner.adapter.HomeTripAdapter;
+import com.tripsplanner.entity.BasicTrip;
 import com.tripsplanner.entity.Trip;
 import com.tripsplanner.entity.User;
 
@@ -58,7 +59,7 @@ public class MyTripsFragment extends Fragment implements DialogInterface.OnClick
     private StaggeredGridLayoutManager mLayoutManager;
     private SwipeRefreshLayout swipeRefreshLayout;
     private MyTripsTask myTripsTask;
-    private List<Trip> myTrips = new ArrayList<Trip>();
+    private List<BasicTrip> myTrips = new ArrayList<BasicTrip>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -174,7 +175,7 @@ public class MyTripsFragment extends Fragment implements DialogInterface.OnClick
             long userID = gson.fromJson(userGson, User.class).getId();
             System.out.println("UserID:"+userID);
 
-            String url = "http://ec2-18-130-53-112.eu-west-2.compute.amazonaws.com:8080/TripsPlanner-war/webresources/mytrips?id="+userID;
+            String url = "http://ec2-18-130-53-112.eu-west-2.compute.amazonaws.com:8080/TripsPlanner-war/webresources/mybasictrips?id="+userID;
             String query = new StringBuilder(url).toString();
 
             return query;
@@ -202,7 +203,7 @@ public class MyTripsFragment extends Fragment implements DialogInterface.OnClick
             String jsonResult = sb.toString();
             Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 
-            myTrips = gson.fromJson(jsonResult, new TypeToken<List<Trip>>(){}.getType());
+            myTrips = gson.fromJson(jsonResult, new TypeToken<List<BasicTrip>>(){}.getType());
         }
     }
 
