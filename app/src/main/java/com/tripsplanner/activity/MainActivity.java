@@ -68,7 +68,6 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
             });
         }
 
-        System.out.println("vaiiiiii");
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         String userGson = preferences.getString("user","");
         ImageView profile = (ImageView) findViewById(R.id.profile);

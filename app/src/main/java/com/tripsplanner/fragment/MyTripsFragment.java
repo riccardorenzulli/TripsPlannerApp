@@ -23,6 +23,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.tripsplanner.R;
 import com.tripsplanner.adapter.HomeTripAdapter;
 import com.tripsplanner.entity.Trip;
@@ -198,9 +200,9 @@ public class MyTripsFragment extends Fragment implements DialogInterface.OnClick
             }
 
             String jsonResult = sb.toString();
-            Gson gson = new Gson();
+            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 
-            myTrips = gson.fromJson(jsonResult, List.class);
+            myTrips = gson.fromJson(jsonResult, new TypeToken<List<Trip>>(){}.getType());
         }
     }
 

@@ -176,19 +176,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         StringBuilder sb = new StringBuilder();
 
         while(line!=null) {
-            System.out.println(line);
+            //System.out.println(line);
             sb.append(line);
             line = read.readLine();
         }
 
         String jsonResult = sb.toString();
 
-        Gson gsonObject = new Gson();
-        String userGson = gsonObject.toJson(jsonResult);
+        System.out.println("Json\n"+jsonResult);
+        /*Gson gsonObject = new Gson();
+        String userGson = gsonObject.toJson(jsonResult);*/
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("user", userGson);
+        editor.putString("user", jsonResult);
         editor.apply();
 
     }
