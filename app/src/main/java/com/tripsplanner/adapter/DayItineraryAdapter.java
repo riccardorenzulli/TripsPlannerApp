@@ -37,7 +37,7 @@ public class DayItineraryAdapter extends RecyclerView.Adapter<DayItineraryAdapte
 
     @Override
     public PlaceViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.place_item, null,false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.place_item, parent,false);
         return new PlaceViewHolder(v);
     }
 

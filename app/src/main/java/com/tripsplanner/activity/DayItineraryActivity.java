@@ -50,7 +50,7 @@ public class DayItineraryActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         System.out.println("start");
-        mLayoutManager = new StaggeredGridLayoutManager(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ? 3 : 2,1);
+        mLayoutManager = new StaggeredGridLayoutManager(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ? 1 : 1,1);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mAdapter = new DayItineraryAdapter(this, places);
