@@ -16,6 +16,10 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import com.tripsplanner.R;
 import com.tripsplanner.adapter.DaysAdapter;
@@ -30,10 +34,16 @@ import org.w3c.dom.Text;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class TripDaysActivity extends AppCompatActivity {
     private MyTripTask myTripTask;
@@ -138,10 +148,11 @@ public class TripDaysActivity extends AppCompatActivity {
             }
 
             String jsonResult = sb.toString();
-            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 
+            Gson gson = new GsonBuilder().setDateFormat("ddMMyyyy").create();
             myTrip = gson.fromJson(jsonResult, Trip.class);
             itineraries = myTrip.getItineraries();
         }
     }
+
 }

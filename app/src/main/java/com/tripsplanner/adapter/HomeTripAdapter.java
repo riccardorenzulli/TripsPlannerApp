@@ -29,6 +29,7 @@ import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,9 +56,10 @@ public class HomeTripAdapter extends RecyclerView.Adapter<HomeTripAdapter.TripVi
     public void onBindViewHolder(TripViewHolder holder, int position) {
         BasicTrip trip = this.myTrips.get(position);
         String tripCity = trip.getDestination();
+        DateFormat targetFormat = new SimpleDateFormat("dd-MM-yyyy");
 
-        String tripDate = "from " + trip.getDepartureDate().toString() +
-                "\nto " + trip.getArrivalDate().toString();
+        String tripDate = "From " + targetFormat.format(trip.getDepartureDate()).toString() +
+                "\nTo " + targetFormat.format(trip.getArrivalDate()).toString();
         //holder.tripImageView.setImageURI(Uri.parse(trip.getDayPlaces(0).get(1).getPhotosUrl()));
         holder.tripTextView.setText(tripCity);
         holder.tripDateTextView.setText(tripDate);
