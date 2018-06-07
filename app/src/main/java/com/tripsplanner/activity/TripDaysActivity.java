@@ -12,6 +12,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -23,6 +24,8 @@ import com.tripsplanner.entity.BasicTrip;
 import com.tripsplanner.entity.DayItinerary;
 import com.tripsplanner.entity.Trip;
 import com.tripsplanner.entity.User;
+
+import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -50,6 +53,7 @@ public class TripDaysActivity extends AppCompatActivity {
 
         linearLayout = (LinearLayout) findViewById(R.id.days_content);
         mRecyclerView = (RecyclerView) linearLayout.findViewById(R.id.recycler_view);
+        TextView barText = (TextView) findViewById(R.id.appBarTripDaysTextView);
 
         Intent intent = getIntent();
         idUser = intent.getLongExtra("id_user", 0);
