@@ -58,12 +58,6 @@ public class TripDaysActivity extends AppCompatActivity {
         Intent intent = getIntent();
         idUser = intent.getLongExtra("id_user", 0);
         idTrip = intent.getLongExtra("id_trip", 0);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        System.out.println("start");
         mLayoutManager = new StaggeredGridLayoutManager(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ? 1 : 1,1);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -72,9 +66,14 @@ public class TripDaysActivity extends AppCompatActivity {
         myTripTask = new MyTripTask(this);
         myTripTask.execute();
 
-
-
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        System.out.println("start");
+    }
+
     protected class MyTripTask extends AsyncTask<String, Void, String> {
         private Context context;
 
