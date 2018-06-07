@@ -143,5 +143,14 @@ public class Trip implements Serializable {
         result.add(dayItinerary.getLegs().get(lastLeg).getArrivalPlace());
         return result;
     }
+
+    public List<Route> getDayRoute(int day) {
+        if(day > this.itineraries.size() || day < 0)
+            new IllegalArgumentException("The trip is not that long!");
+        DayItinerary dayItinerary = this.itineraries.get(day);
+        List<Route> result = new ArrayList();
+        /*Add the last place*/
+        return dayItinerary.getLegs();
+    }
     
 }

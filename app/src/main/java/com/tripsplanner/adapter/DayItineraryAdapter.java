@@ -1,19 +1,24 @@
 package com.tripsplanner.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tripsplanner.R;
 import com.tripsplanner.entity.Place;
+import com.tripsplanner.entity.Route;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -28,10 +33,12 @@ import static android.content.ContentValues.TAG;
 public class DayItineraryAdapter extends RecyclerView.Adapter<DayItineraryAdapter.PlaceViewHolder> {
     private Context context = null;
     private List<Place> places = null;
+    private List<Route> routes = null;
 
-    public DayItineraryAdapter(Context context, List<Place> places) {
+    public DayItineraryAdapter(Context context, List<Place> places, List<Route> routes) {
         this.context = context;
         this.places = places;
+        this.routes = routes;
     }
 
 
@@ -42,10 +49,27 @@ public class DayItineraryAdapter extends RecyclerView.Adapter<DayItineraryAdapte
     }
 
     @Override
-    public void onBindViewHolder(PlaceViewHolder holder, int position) {
+    public void onBindViewHolder(PlaceViewHolder holder, final int position) {
         Place place = this.places.get(position);
         holder.placeTextView.setText(place.getName());
         holder.descriptionTextView.setText(place.getDescription());
+
+        if (position != this.places.size()-1) {
+            holder.placeDirectionsTime.setText(routes.get(position).getInfo());
+            holder.placeDirectionsMap.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    String uri = routes.get(position).getMapsDirections();
+                    Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(uri));
+                    intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
+                    context.startActivity(intent);
+                }
+            });
+        }
+
+        else {
+            holder.directions_layout.setVisibility(View.INVISIBLE);
+        }
+
         new BitmapDownloaderTask(holder.placeImageView).execute(place.getPhotosUrl());
 
     }
@@ -59,12 +83,18 @@ public class DayItineraryAdapter extends RecyclerView.Adapter<DayItineraryAdapte
         ImageView placeImageView;
         TextView placeTextView;
         TextView descriptionTextView;
+        TextView placeDirectionsTime;
+        ImageButton placeDirectionsMap;
+        LinearLayout directions_layout;
 
         public PlaceViewHolder(View itemView) {
             super(itemView);
             placeImageView = (ImageView) itemView.findViewById(R.id.placeImageView);
             placeTextView = (TextView) itemView.findViewById(R.id.placeTextView);
             descriptionTextView = (TextView) itemView.findViewById(R.id.placeDescription);
+            placeDirectionsTime = (TextView) itemView.findViewById(R.id.placeDirectionsTime);
+            placeDirectionsMap = (ImageButton) itemView.findViewById(R.id.placeDirectionsMap);
+            directions_layout = (LinearLayout) itemView.findViewById(R.id.place_directions_layout);
         }
 
         @Override

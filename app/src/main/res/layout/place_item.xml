@@ -1,37 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="8dp"
-    android:layout_marginLeft="8dp"
-    android:layout_marginRight="8dp"
-    android:layout_marginBottom="4dp"
-    android:id="@+id/place_item"
-    >
-    <LinearLayout
-        android:orientation="vertical"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:orientation="vertical"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:id="@+id/place">
+
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/place_id">
-
-        <ImageView
-            android:adjustViewBounds="true"
-            android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:scaleType="centerCrop"
-            android:id="@+id/placeImageView" />
-
-        <TextView
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="4dp"
+        android:id="@+id/place_item"
+        >
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:padding="8dp"
-            android:background="@color/white"
-            android:id="@+id/placeTextView"/>
+            android:id="@+id/place_id">
+
+            <ImageView
+                android:adjustViewBounds="true"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:scaleType="centerCrop"
+                android:id="@+id/placeImageView" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:padding="8dp"
+                android:background="@color/white"
+                android:id="@+id/placeTextView"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:id="@+id/placeDescription"/>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/place_directions_layout"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="35dp"
+        android:layout_marginRight="35dp"
+        android:layout_marginBottom="5dp"
+        android:weightSum="2">
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="#9E9E9E" />
+
         <TextView
-            android:layout_width="match_parent"
+            android:id="@+id/placeDirectionsTime"
+            android:layout_weight="1"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:background="@color/transparent"
             android:padding="8dp"
-            android:id="@+id/placeDescription"/>
+            android:textStyle="bold" />
+        <LinearLayout
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:padding="4dp"
+            android:gravity="right">
+            <ImageButton
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@color/transparent"
+                android:id="@+id/placeDirectionsMap"
+                android:layout_gravity="right"
+                android:src="@drawable/ic_google_mapscircle"/>
+        </LinearLayout>
+
     </LinearLayout>
-</android.support.v7.widget.CardView>
+
+</LinearLayout>

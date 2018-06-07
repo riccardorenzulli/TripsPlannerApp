@@ -20,6 +20,7 @@ import com.tripsplanner.adapter.DayItineraryAdapter;
 import com.tripsplanner.adapter.HomeTripAdapter;
 import com.tripsplanner.entity.BasicTrip;
 import com.tripsplanner.entity.Place;
+import com.tripsplanner.entity.Route;
 import com.tripsplanner.fragment.MyTripsFragment;
 
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ public class DayItineraryActivity extends AppCompatActivity {
     private LinearLayout linearLayout;
     private StaggeredGridLayoutManager mLayoutManager;
     private List<Place> places = new ArrayList<Place>();
+    private List<Route> routes = new ArrayList<Route>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +41,10 @@ public class DayItineraryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_day_itinerary);
         Intent intent = getIntent();
         String dayPlaces = intent.getStringExtra("dayPlaces");
+        String dayRoutes = intent.getStringExtra("dayRoutes");
         Gson gson = new Gson();
         places = gson.fromJson(dayPlaces, new TypeToken<List<Place>>(){}.getType());
+        routes = gson.fromJson(dayRoutes, new TypeToken<List<Route>>(){}.getType());
 
         linearLayout = (LinearLayout) findViewById(R.id.places_content);
         mRecyclerView = (RecyclerView) linearLayout.findViewById(R.id.recycler_view);
@@ -53,7 +57,7 @@ public class DayItineraryActivity extends AppCompatActivity {
         mLayoutManager = new StaggeredGridLayoutManager(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ? 1 : 1,1);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mAdapter = new DayItineraryAdapter(this, places);
+        mAdapter = new DayItineraryAdapter(this, places, routes);
         mRecyclerView.setAdapter(mAdapter);
         
 
