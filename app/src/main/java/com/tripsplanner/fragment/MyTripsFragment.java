@@ -87,8 +87,8 @@ public class MyTripsFragment extends Fragment implements DialogInterface.OnClick
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mAdapter = new HomeTripAdapter(this.getContext(), myTrips);
         mRecyclerView.setAdapter(mAdapter);
-/*        myTripsTask = new MyTripsTask(this.getContext());
-        myTripsTask.execute();*/
+        myTripsTask = new MyTripsTask(this.getContext());
+        myTripsTask.execute();
 
 
     }
