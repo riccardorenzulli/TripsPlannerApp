@@ -52,7 +52,7 @@ import static android.support.v4.widget.SwipeRefreshLayout.*;
  * gabriele.sartor@edu.unito.it<br><br>
  */
 
-public class MyTripsFragment extends Fragment implements DialogInterface.OnClickListener, OnRefreshListener {
+public class MyTripsFragment extends Fragment implements OnRefreshListener {
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -105,33 +105,11 @@ public class MyTripsFragment extends Fragment implements DialogInterface.OnClick
         super.onDestroy();
     }
 
-    @Override
-    public void onClick(DialogInterface dialog, int which) {
-        switch (which) {
-            case DialogInterface.BUTTON_POSITIVE:
-                myTripsTask = new MyTripsTask(this.getContext());
-                myTripsTask.execute();
-                break;
-            case DialogInterface.BUTTON_NEGATIVE:
-                break;
-        }
-    }
 
     @Override
     public void onRefresh() {
-        if(this.myTrips.size()==0)
-            onClick(new DialogInterface() {
-                @Override
-                public void cancel() {
-
-                }
-
-                @Override
-                public void dismiss() {
-
-                }
-            }, DialogInterface.BUTTON_POSITIVE);
-        else swipeRefreshLayout.setRefreshing(false);
+        myTripsTask = new MyTripsTask(this.getContext());
+        myTripsTask.execute();
 
     }
 
